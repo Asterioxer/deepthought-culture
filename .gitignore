@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+ENV/
+
+# Configuration and Keys
+.env
+.env.local
+.env.*.local
+
+# IDEs
+.vscode/
+.idea/
+.gemini/
+
+# Scratch files
+scratch_test.py
+scratch_test_key.py
+test_system.py
