@@ -31,6 +31,8 @@ async def discovery_node(state: GraphState) -> Dict[str, Any]:
         groq_api_key=state.get("groq_api_key"),
         ollama_base_url=state.get("ollama_base_url"),
         ollama_model=state.get("ollama_model"),
+        openrouter_api_key=state.get("openrouter_api_key"),
+        openrouter_model=state.get("openrouter_model"),
         api_key=state.get("api_key"),
         base_url=state.get("base_url"),
         model=state.get("model")
@@ -73,6 +75,8 @@ async def research_node(state: GraphState) -> Dict[str, Any]:
         groq_api_key=state.get("groq_api_key"),
         ollama_base_url=state.get("ollama_base_url"),
         ollama_model=state.get("ollama_model"),
+        openrouter_api_key=state.get("openrouter_api_key"),
+        openrouter_model=state.get("openrouter_model"),
         api_key=state.get("api_key"),
         base_url=state.get("base_url"),
         model=state.get("model")
@@ -124,6 +128,8 @@ async def processing_pipeline_node(state: GraphState) -> Dict[str, Any]:
         "groq_api_key": state.get("groq_api_key"),
         "ollama_base_url": state.get("ollama_base_url"),
         "ollama_model": state.get("ollama_model"),
+        "openrouter_api_key": state.get("openrouter_api_key"),
+        "openrouter_model": state.get("openrouter_model"),
         "api_key": state.get("api_key"),
         "base_url": state.get("base_url"),
         "model": state.get("model")

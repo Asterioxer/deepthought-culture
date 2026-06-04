@@ -74,15 +74,19 @@ default_provider = os.environ.get("LLM_PROVIDER", "gemini").lower().strip()
 env_google_key = os.environ.get("GOOGLE_API_KEY", "")
 env_groq_key = os.environ.get("GROQ_API_KEY", "")
 env_ollama_url = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
-env_ollama_model = os.environ.get("OLLAMA_MODEL", "qwen3:8b")
+env_ollama_model = os.environ.get("OLLAMA_MODEL", "qwen2.5:7b")
+env_openrouter_key = os.environ.get("OPENROUTER_API_KEY", "")
+env_openrouter_model = os.environ.get("OPENROUTER_MODEL", "google/gemini-2.5-flash:free")
 
 st.sidebar.subheader("🤖 LLM Provider Settings")
-provider_options = ["Gemini", "Groq", "Ollama"]
+provider_options = ["Gemini", "Groq", "Ollama", "OpenRouter"]
 default_idx = 0
 if default_provider == "groq":
     default_idx = 1
 elif default_provider == "ollama":
     default_idx = 2
+elif default_provider == "openrouter":
+    default_idx = 3
 
 selected_provider = st.sidebar.selectbox("Active LLM Provider", options=provider_options, index=default_idx)
 
@@ -91,6 +95,8 @@ google_key = ""
 groq_key = ""
 ollama_url = "http://localhost:11434"
 ollama_model = "qwen2.5:7b"
+openrouter_key = ""
+openrouter_model = "google/gemini-2.5-flash:free"
 
 if selected_provider == "Gemini":
     google_key = st.sidebar.text_input("Google API Key", value=env_google_key, type="password", help="Enter your Google AI Studio API Key.")
@@ -100,8 +106,12 @@ elif selected_provider == "Groq":
     st.sidebar.success("Active: **Groq (Secondary)**")
 elif selected_provider == "Ollama":
     ollama_url = st.sidebar.text_input("Ollama Base URL", value=env_ollama_url, help="Local Ollama service URL (default: http://localhost:11434).")
-    ollama_model = st.sidebar.text_input("Ollama Model Name", value=env_ollama_model, help="Name of the local pulled model (default: qwen3:8b).")
+    ollama_model = st.sidebar.text_input("Ollama Model Name", value=env_ollama_model, help="Name of the local pulled model (default: qwen2.5:7b).")
     st.sidebar.success("Active: **Ollama (Local Fallback)**")
+elif selected_provider == "OpenRouter":
+    openrouter_key = st.sidebar.text_input("OpenRouter API Key", value=env_openrouter_key, type="password", help="Enter your OpenRouter API Key.")
+    openrouter_model = st.sidebar.text_input("OpenRouter Model Name", value=env_openrouter_model, help="OpenRouter model name (default: google/gemini-2.5-flash:free).")
+    st.sidebar.success("Active: **OpenRouter**")
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 📊 Scoring Guidelines")
@@ -179,6 +189,8 @@ async def run_pipeline(state_input):
         "groq_api_key": state_input["groq_api_key"],
         "ollama_base_url": state_input["ollama_base_url"],
         "ollama_model": state_input["ollama_model"],
+        "openrouter_api_key": state_input["openrouter_api_key"],
+        "openrouter_model": state_input["openrouter_model"],
         "auto_broaden": state_input["auto_broaden"],
         "broaden_count": 0,
         "discovered_companies": [],
@@ -230,6 +242,9 @@ if st.button("🚀 Start Discovery Engine", disabled=st.session_state.running):
     elif selected_provider == "Groq" and not groq_key:
         st.error("Error: Please provide a valid Groq API Key in the sidebar config.")
         valid = False
+    elif selected_provider == "OpenRouter" and not openrouter_key:
+        st.error("Error: Please provide a valid OpenRouter API Key in the sidebar config.")
+        valid = False
         
     if valid:
         st.session_state.running = True
@@ -245,6 +260,8 @@ if st.button("🚀 Start Discovery Engine", disabled=st.session_state.running):
             "groq_api_key": groq_key,
             "ollama_base_url": ollama_url,
             "ollama_model": ollama_model,
+            "openrouter_api_key": openrouter_key,
+            "openrouter_model": openrouter_model,
             "auto_broaden": auto_broaden_input
         }
         

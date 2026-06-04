@@ -9,13 +9,23 @@ class Config:
     
     @staticmethod
     def get_provider(override: str = None) -> str:
-        """Returns the active LLM provider (gemini, groq, or ollama). Default: gemini."""
+        """Returns the active LLM provider (gemini, groq, ollama, or openrouter). Default: gemini."""
         return (override or os.environ.get("LLM_PROVIDER") or "gemini").strip().lower()
 
     @staticmethod
     def get_google_api_key(override: str = None) -> str:
         """Returns the Google API key for Gemini models."""
         return (override or os.environ.get("GOOGLE_API_KEY") or "").strip()
+
+    @staticmethod
+    def get_openrouter_api_key(override: str = None) -> str:
+        """Returns the OpenRouter API key."""
+        return (override or os.environ.get("OPENROUTER_API_KEY") or "").strip()
+
+    @staticmethod
+    def get_openrouter_model(override: str = None) -> str:
+        """Returns the OpenRouter model name (default: google/gemini-2.5-flash:free)."""
+        return (override or os.environ.get("OPENROUTER_MODEL") or "google/gemini-2.5-flash:free").strip()
 
     @staticmethod
     def get_groq_api_key(override: str = None) -> str:

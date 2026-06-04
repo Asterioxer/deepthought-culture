@@ -39,23 +39,23 @@ def main():
     ollama_path = shutil.which("ollama")
     if ollama_path:
         print(f"Ollama detected at: {ollama_path}")
-        print("Attempting to pull the default model 'qwen3:8b'...")
+        print("Attempting to pull the default model 'qwen2.5:7b'...")
         try:
             # Run pull command
-            result = subprocess.run(["ollama", "pull", "qwen3:8b"], capture_output=False)
+            result = subprocess.run(["ollama", "pull", "qwen2.5:7b"], capture_output=False)
             if result.returncode == 0:
-                print("SUCCESS: Local model 'qwen3:8b' is pulled and ready.")
+                print("SUCCESS: Local model 'qwen2.5:7b' is pulled and ready.")
             else:
-                print("\n[WARNING] Ollama is installed but pulling 'qwen3:8b' failed.")
+                print("\n[WARNING] Ollama is installed but pulling 'qwen2.5:7b' failed.")
                 print("Make sure the Ollama desktop application is running (or run 'ollama serve' in another window) and execute:")
-                print("ollama pull qwen3:8b")
+                print("ollama pull qwen2.5:7b")
         except Exception as e:
             print(f"[WARNING] Error contacting Ollama service: {e}")
-            print("To run local models, start Ollama and run: ollama pull qwen3:8b")
+            print("To run local models, start Ollama and run: ollama pull qwen2.5:7b")
     else:
         print("Ollama is not detected on your system PATH.")
         print("If you plan to use local offline models, install Ollama from https://ollama.com/ and pull the default model:")
-        print("  ollama pull qwen3:8b")
+        print("  ollama pull qwen2.5:7b")
 
     print("\n=== Setup Complete! ===")
     print("To run the application:")

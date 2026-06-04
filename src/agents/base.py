@@ -19,6 +19,8 @@ class BaseAgent:
                  groq_api_key: str = None,
                  ollama_base_url: str = None,
                  ollama_model: str = None,
+                 openrouter_api_key: str = None,
+                 openrouter_model: str = None,
                  api_key: str = None,       # Legacy/OpenAI key
                  base_url: str = None,      # Legacy/OpenAI base URL
                  model: str = None):        # Legacy/OpenAI model name
@@ -28,6 +30,8 @@ class BaseAgent:
         self.groq_api_key = groq_api_key or Config.get_groq_api_key()
         self.ollama_base_url = ollama_base_url or Config.get_ollama_base_url()
         self.ollama_model = ollama_model or Config.get_ollama_model()
+        self.openrouter_api_key = openrouter_api_key or Config.get_openrouter_api_key()
+        self.openrouter_model = openrouter_model or Config.get_openrouter_model()
         self.legacy_api_key = api_key
         self.legacy_base_url = base_url
         self.legacy_model = model
@@ -35,25 +39,30 @@ class BaseAgent:
     def call_llm(self, system_prompt: str, user_prompt: str, json_mode: bool = False) -> str:
         """
         Invokes the LLM with system and user prompts.
-        Fallback chain: Gemini -> Groq -> Ollama.
+        Fallback chain: OpenRouter -> Gemini -> Groq -> Ollama.
         Per-minute rate limits: waits briefly and retries on the same provider (up to 3x).
         Daily/project quota exhaustion: cascades immediately to the next provider.
         """
         active = self.provider_name.lower().strip()
 
-        if active == "gemini":
+        if active == "openrouter":
+            chain = ["openrouter", "gemini", "groq", "ollama"]
+        elif active == "gemini":
             chain = ["gemini", "groq", "ollama"]
         elif active == "groq":
             chain = ["groq", "ollama"]
         elif active == "ollama":
             chain = ["ollama"]
         else:
-            chain = [active, "gemini", "groq", "ollama"]
+            chain = [active, "openrouter", "gemini", "groq", "ollama"]
 
         last_error = None
 
         for prov in chain:
             # Skip providers with missing credentials
+            if prov == "openrouter" and not self.openrouter_api_key:
+                logger.warning("Skipping OpenRouter: OPENROUTER_API_KEY not configured.")
+                continue
             if prov == "gemini" and not self.google_api_key:
                 logger.warning("Skipping Gemini: GOOGLE_API_KEY not configured.")
                 continue
@@ -66,7 +75,10 @@ class BaseAgent:
             prov_base_url = None
             prov_model = None
 
-            if prov == "gemini":
+            if prov == "openrouter":
+                prov_api_key = self.openrouter_api_key
+                prov_model = self.openrouter_model or "google/gemini-2.5-flash:free"
+            elif prov == "gemini":
                 prov_api_key = self.google_api_key
                 prov_model = "gemini-2.0-flash"
             elif prov == "groq":

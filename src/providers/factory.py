@@ -2,6 +2,7 @@ import logging
 from src.providers.gemini_provider import GeminiProvider
 from src.providers.groq_provider import GroqProvider
 from src.providers.ollama_provider import OllamaProvider
+from src.providers.openrouter_provider import OpenRouterProvider
 from src.config import Config
 
 logger = logging.getLogger(__name__)
@@ -20,6 +21,8 @@ class ProviderFactory:
             return GroqProvider()
         elif name == "ollama":
             return OllamaProvider()
+        elif name == "openrouter":
+            return OpenRouterProvider()
         else:
             logger.error(f"Unsupported provider requested: {name}. Defaulting to Gemini.")
             return GeminiProvider()

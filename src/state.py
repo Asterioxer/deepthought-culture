@@ -112,6 +112,8 @@ class GraphState(TypedDict):
     groq_api_key: Optional[str]
     ollama_base_url: Optional[str]
     ollama_model: Optional[str]
+    openrouter_api_key: Optional[str]
+    openrouter_model: Optional[str]
     
     # Legacy / Custom LLM configurations (retained for backward compatibility)
     api_key: Optional[str]
